@@ -1,0 +1,30 @@
+{
+  "name": "steam-thumbnail-collector",
+  "version": "1.0.0",
+  "description": "Collects steam game thumbnails based on your custom categories in the desktop application.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/whatasoda/steam-thumbnail-collector.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/whatasoda/steam-thumbnail-collector/issues"
+  },
+  "homepage": "https://github.com/whatasoda/steam-thumbnail-collector#readme",
+  "dependencies": {
+    "jszip": "^3.6.0"
+  },
+  "devDependencies": {
+    "@whatasoda/eslint-config": "^3.14.0",
+    "eslint": "^7.29.0",
+    "gh-pages": "^3.2.3",
+    "prettier": "^2.3.2",
+    "typescript": "^4.3.5"
+  }
+}
