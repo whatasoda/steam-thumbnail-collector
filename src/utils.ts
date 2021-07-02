@@ -1,4 +1,5 @@
 import JSZip from 'jszip';
+import fetchImage, { getAllImageUrls, AppImage, getPrimaryImageType, ImageFetchMode, ImageType } from './fetch-image';
 import { ConfigApps, RgGame } from './types';
 
 export const bindSelect = (select: HTMLSelectElement, emptyItemLabel: string) => {
@@ -48,22 +49,44 @@ export const filterGamesByCategory = (categoryMap: Map<string, string[]>, target
   });
 };
 
-export const createThumbnailZip = async (games: RgGame[]) => {
+interface ImageFileData {
+  appid: number;
+  name: string;
+  image: AppImage;
+}
+
+interface FailedAppData {
+  failType: 'FALLBACK_IS_USED' | 'ALL_NOT_FOUND';
+  appid: number;
+  name: string;
+  expectedType: ImageType;
+  allImageUrls: Record<ImageType, string>;
+}
+
+export const createThumbnailZip = async (games: RgGame[], fetchMode: ImageFetchMode = 'capsule') => {
+  const images: ImageFileData[] = [];
+  const fails: FailedAppData[] = [];
   const promises = games.map(async ({ appid, name }) => {
-    try {
-      const dataUrl = await loadThumbnailAsDataUrl(appid);
-      return { name, dataUrl };
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.log(`Failed to load image for ${name}`);
-      return null;
+    const image = await fetchImage(appid, fetchMode);
+    const expectedType = getPrimaryImageType(fetchMode);
+    let failType: FailedAppData['failType'] | null;
+    if (image) {
+      images.push({ appid, name, image });
+      failType = expectedType === image.type ? null : 'FALLBACK_IS_USED';
+    } else {
+      failType = 'ALL_NOT_FOUND';
+    }
+
+    if (failType) {
+      const allImageUrls = getAllImageUrls(appid);
+      fails.push({ failType, appid, name, expectedType, allImageUrls });
     }
   });
-  const images = (await Promise.all(promises)).filter(Boolean);
+  await Promise.all(promises);
 
   const zip = new JSZip();
-  (images as NonNullable<typeof images[number]>[]).forEach(({ name, dataUrl }) => {
-    zip.file(`${name}.jpg`, dataUrl.replace(/^data:image\/jpeg;base64,/, ''), { base64: true });
+  images.forEach(({ name, image }) => {
+    zip.file(formatName(`${name}.jpg`), image.blob, { binary: true });
   });
 
   return await zip.generateAsync({ type: 'blob' });
@@ -82,16 +105,6 @@ export const saveAs = (file: Blob, filename: string) => {
   }, 0);
 };
 
-const loadThumbnailAsDataUrl = (appid: number, filename: string = 'capsule_184x69.jpg') => {
-  return fetch(`https://cdn.akamai.steamstatic.com/steam/apps/${appid}/${filename}`)
-    .then((res) => res.blob())
-    .then((blob) => {
-      const reader = new FileReader();
-      return new Promise<string>((resolve) => {
-        reader.addEventListener('loadend', () => {
-          resolve(reader.result as string);
-        });
-        reader.readAsDataURL(blob);
-      });
-    });
+const formatName = (name: string) => {
+  return name.replace(/\s|\//g, '_').replace(/:/g, '').replace(/_+/g, '_');
 };

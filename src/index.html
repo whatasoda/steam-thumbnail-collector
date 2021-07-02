@@ -14,8 +14,19 @@
     <br>
     <button id="load">Load</button>
     <br>
-    <select id="category-select" style="width:100px;"></select>
+    <label>
+      Category:
+      <select id="category-select" style="width:100px;"></select>
+    </label>
     <br>
+    <label>
+      Image Type:
+      <select id="image-type-select">
+        <option value="capsule" label="でふぉ"></option>
+        <option value="library" label="たてなが"></option>
+        <option value="header" label="ちょっと大きいかも"></option>
+      </select>
+    </label>
     <button id="generate" disabled>Generate zip</button>
   </div>
   <script src="./index.ts" type="module"></script>

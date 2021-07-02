@@ -25,25 +25,30 @@ const init = () => {
     return;
   }
 
+  const categorySelect = document.querySelector<HTMLSelectElement>('#category-select')!;
+  const imageTypeSelect = document.querySelector<HTMLSelectElement>('#image-type-select')!;
+
   const categoryMap = createCategoryMap(config);
-  const select = document.querySelector<HTMLSelectElement>('#category-select')!;
-  const { addOption } = bindSelect(select, 'Choose a category...');
+  const { addOption } = bindSelect(categorySelect, 'All');
   [...categoryMap.entries()].forEach(([key, { length }]) => {
     addOption(key, `${key} - ${length} items`);
   });
 
-  select.addEventListener('change', (event) => {
-    if ((event.currentTarget as HTMLSelectElement).value) {
-      generateButton.removeAttribute('disabled');
-    }
-  });
+  // categorySelect.addEventListener('change', (event) => {
+  //   if ((event.currentTarget as HTMLSelectElement).value) {
+  //     generateButton.removeAttribute('disabled');
+  //   }
+  // });
 
   const generateButton = document.querySelector<HTMLButtonElement>('#generate')!;
+  generateButton.removeAttribute('disabled');
   generateButton.addEventListener('click', () => {
-    const category = select.value;
-    const selected = filterGamesByCategory(categoryMap, category, games);
-    createThumbnailZip(selected).then((zip) => {
-      saveAs(zip, `${category}.zip`);
+    const category = categorySelect.value;
+    const selected = category ? filterGamesByCategory(categoryMap, category, games) : games;
+    const imageType = imageTypeSelect.value;
+
+    createThumbnailZip(selected, imageType as any).then((zip) => {
+      saveAs(zip, `${category || 'all'}.zip`);
     });
   });
 };
