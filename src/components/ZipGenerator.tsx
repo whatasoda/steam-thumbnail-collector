@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { fetchModeLabels, ImageFetchMode } from '../fetch-image';
 import { RgGame } from '../types';
 import { createThumbnailZip, FailedAppData, ProgressInfo, saveAs } from '../utils';
+import { StyledCode } from './fragments';
 
 interface ZipGeneratorProps {
   fetchMode: ImageFetchMode;
@@ -54,14 +55,18 @@ export default function ZipGenerator({ fetchMode, games, zipFilename }: ZipGener
         const actualTypeLabel = actualType && fetchModeLabels[actualType];
         return (
           <div key={appid}>
-            '{name}'は'{expectedTypeLabel}'でのダウンロードを試みましたが
+            「{name}」(ファイル名<StyledCode>{filename}</StyledCode>)は「{expectedTypeLabel}
+            」でのダウンロードを試みましたが
             {
               {
-                FALLBACK_FOUND: `ファイルが見つからなかったため代わりに'${actualTypeLabel}'をダウンロードしました。`,
+                FALLBACK_FOUND: `ファイルが見つからなかったため代わりに「${actualTypeLabel}」をダウンロードしました。`,
                 ALL_NOT_FOUND: 'ファイルが見つかりませんでした。',
               }[failType]
             }
             必要に応じて下から別サイズの画像をクリックしてダウンロードしてください。(壊れている画像もダウンロードできますが虚無がダウンロードされます。)
+            <br />
+            または、<StyledCode>"Program Files (x86)"/Steam/appcache/librarycache</StyledCode>にある
+            <StyledCode>{appid}</StyledCode>で始まる画像ファイルから使いたい画像を拾ってください。
             <br />
             {renderAlternativeImage(filename, allImageUrls.capsule)}
             {renderAlternativeImage(filename, allImageUrls.header)}
