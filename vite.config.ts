@@ -11,4 +11,15 @@ export default defineConfig({
   server: {
     port: 3000,
   },
+  plugins: [
+    {
+      name: 'fix-vdf-parser',
+      transform: (code, id) => {
+        if (id.includes('/node_modules/') && id.includes('vdf-parser')) {
+          return `let lines,m;\n${code}`;
+        }
+        return code;
+      },
+    },
+  ],
 });
