@@ -1,30 +1,7 @@
+import filenamify from 'filenamify/filenamify';
 import JSZip from 'jszip';
 import fetchImage, { getAllImageUrls, AppImage, getPrimaryImageType, ImageFetchMode, ImageType } from './fetch-image';
 import { ConfigApps, RgGame } from './types';
-
-export const bindSelect = (select: HTMLSelectElement, emptyItemLabel: string) => {
-  select.innerHTML = '';
-  const addOption = (value: string, label: string) => {
-    const option = document.createElement('option');
-    option.value = value;
-    option.label = label;
-    select.appendChild(option);
-  };
-  addOption('', emptyItemLabel);
-  return { addOption };
-};
-
-export const getJsonFromTextarea = <T, U = T>(selector: string, transform: (raw: T) => U) => {
-  const textarea = document.querySelector<HTMLTextAreaElement>(selector);
-  const jsonText = textarea?.value;
-  if (!jsonText) return null;
-  try {
-    const json = JSON.parse(jsonText) as T;
-    return transform(json);
-  } catch (e) {
-    return null;
-  }
-};
 
 export type CategoryMap = Map<string, string[]>;
 export const createCategoryMap = (apps: ConfigApps): CategoryMap => {
@@ -87,7 +64,7 @@ export const createThumbnailZip = async (games: RgGame[], fetchMode: ImageFetchM
 
   const zip = new JSZip();
   images.forEach(({ name, image }) => {
-    zip.file(formatName(`${name}.jpg`), image.blob, { binary: true });
+    zip.file(formatFilename(`${name}.jpg`), image.blob, { binary: true });
   });
 
   return await zip.generateAsync({ type: 'blob' });
@@ -97,7 +74,7 @@ export const saveAs = (file: Blob, filename: string) => {
   const anchor = document.createElement('a');
   const url = URL.createObjectURL(file);
   anchor.href = url;
-  anchor.download = filename;
+  anchor.download = formatFilename(filename);
   document.body.appendChild(anchor);
   anchor.click();
   return new Promise<void>((resolve) => {
@@ -109,6 +86,6 @@ export const saveAs = (file: Blob, filename: string) => {
   });
 };
 
-const formatName = (name: string) => {
-  return name.replace(/\s|\//g, '_').replace(/:/g, '').replace(/_+/g, '_');
+const formatFilename = (filename: string) => {
+  return filenamify(filename, { replacement: '_' }).replace(/_+/g, '_');
 };
