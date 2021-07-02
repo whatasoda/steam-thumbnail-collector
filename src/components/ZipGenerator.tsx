@@ -61,7 +61,7 @@ export default function ZipGenerator({ fetchMode, games, zipFilename }: ZipGener
                 ALL_NOT_FOUND: 'ファイルが見つかりませんでした。',
               }[failType]
             }
-            必要に応じて下から別サイズの画像をダウンロードしてください。(壊れている画像もダウンロードできますが虚無がダウンロードされます。)
+            必要に応じて下から別サイズの画像をクリックしてダウンロードしてください。(壊れている画像もダウンロードできますが虚無がダウンロードされます。)
             <br />
             {renderAlternativeImage(filename, allImageUrls.capsule)}
             {renderAlternativeImage(filename, allImageUrls.header)}

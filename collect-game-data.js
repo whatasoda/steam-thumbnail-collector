@@ -12,7 +12,7 @@
     textarea.select();
     document.execCommand('copy');
     setTimeout(() => {
-      alert('Copied game data to clipboad!');
+      alert('クリップボードにゲームデータをコピーしました！');
     }, 10);
   })();
 }
