@@ -13,6 +13,10 @@ const ConfigAppsInput = createDataInput<ConfigApps>({
       const full = vdf.parse(raw) as UserRoamingConfigStore;
       return full?.UserRoamingConfigStore?.Software?.Valve?.Steam?.Apps ?? null;
     } catch (e) {
+      if (process.env.NODE_ENV !== 'production') {
+        // eslint-disable-next-line no-console
+        console.log(e);
+      }
       return null;
     }
   },
@@ -38,6 +42,10 @@ const RgGamesInput = createDataInput<RgGame[]>({
       const data = JSON.parse(raw);
       return Array.isArray(data) ? data : null;
     } catch (e) {
+      if (process.env.NODE_ENV !== 'production') {
+        // eslint-disable-next-line no-console
+        console.log(e);
+      }
       return null;
     }
   },
