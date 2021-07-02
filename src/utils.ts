@@ -33,10 +33,11 @@ interface ImageFileData {
   image: AppImage;
 }
 
-interface FailedAppData {
-  failType: 'FALLBACK_IS_USED' | 'ALL_NOT_FOUND';
+export interface FailedAppData {
+  failType: 'FALLBACK_FOUND' | 'ALL_NOT_FOUND';
   appid: number;
   name: string;
+  actualType: ImageType | null;
   expectedType: ImageType;
   allImageUrls: Record<ImageType, string>;
 }
@@ -50,14 +51,21 @@ export const createThumbnailZip = async (games: RgGame[], fetchMode: ImageFetchM
     let failType: FailedAppData['failType'] | null;
     if (image) {
       images.push({ appid, name, image });
-      failType = expectedType === image.type ? null : 'FALLBACK_IS_USED';
+      failType = expectedType === image.type ? null : 'FALLBACK_FOUND';
     } else {
       failType = 'ALL_NOT_FOUND';
     }
 
     if (failType) {
       const allImageUrls = getAllImageUrls(appid);
-      fails.push({ failType, appid, name, expectedType, allImageUrls });
+      fails.push({
+        failType,
+        appid,
+        name,
+        actualType: image?.type ?? null,
+        expectedType,
+        allImageUrls,
+      });
     }
   });
   await Promise.all(promises);
@@ -69,7 +77,7 @@ export const createThumbnailZip = async (games: RgGame[], fetchMode: ImageFetchM
 
   const zipBlob = await zip.generateAsync({ type: 'blob' });
 
-  return zipBlob;
+  return { zipBlob, fails };
 };
 
 export const saveAs = (file: Blob, filename: string) => {
@@ -88,6 +96,6 @@ export const saveAs = (file: Blob, filename: string) => {
   });
 };
 
-const formatFilename = (filename: string) => {
+export const formatFilename = (filename: string) => {
   return filenamify(filename, { replacement: '_' }).replace(/_+/g, '_');
 };
