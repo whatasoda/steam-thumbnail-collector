@@ -73,6 +73,12 @@ export const createThumbnailZip = async (games: RgGame[], fetchMode: ImageFetchM
   });
 
   const zipBlob = await zip.generateAsync({ type: 'blob' });
+  fails.sort(({ failType: a }, { failType: b }) => {
+    if (a === b) return 0;
+    if (a === 'ALL_NOT_FOUND') return -1;
+    if (b === 'ALL_NOT_FOUND') return 1;
+    return 0;
+  });
 
   return { zipBlob, fails };
 };

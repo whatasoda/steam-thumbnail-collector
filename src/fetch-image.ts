@@ -19,6 +19,15 @@ const fallbacks: Record<ImageFallbackType, ImageType[]> = {
   'library-fallback': ['library', 'header', 'capsule'],
 };
 
+export const fetchModeLabels: Record<ImageFetchMode, string> = {
+  capsule: '1. 一番小さい 横長',
+  header: '2. 少し大きめ 横長',
+  library: '3. 大きめ 縦長',
+  'capsule-fallback': '1. 一番小さい 横長',
+  'library-fallback': '3 → 2 → 1 の順で画像があるものを使う',
+  'header-fallback': '2 → 1 の順で画像があるものを使う',
+};
+
 export default function fetchImage(appid: number, mode: ImageFetchMode): Promise<AppImage | null> {
   if (isFallbackImageFetchMode(mode)) {
     return fetchImageWithFallback(appid, mode);

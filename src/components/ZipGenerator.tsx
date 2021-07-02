@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { ImageFetchMode } from '../fetch-image';
+import { fetchModeLabels, ImageFetchMode } from '../fetch-image';
 import { RgGame } from '../types';
 import { createThumbnailZip, FailedAppData, saveAs } from '../utils';
 import ThumbnailTypeSelect from './ThumbNailTypeSelect';
@@ -52,23 +52,37 @@ export default function ZipGenerator({ games, zipFilename }: ZipGeneratorProps) 
         children="Download"
       />
       <hr />
-      {fails.map(({ appid, name, actualType, expectedType, failType, allImageUrls }) => (
-        <div key={appid}>
-          '{name}'は'{expectedType}'でのダウンロードを試みましたが
-          {
+      {fails.map(({ appid, name, filename, actualType, expectedType, failType, allImageUrls }) => {
+        const expectedTypeLabel = fetchModeLabels[expectedType];
+        const actualTypeLabel = actualType && fetchModeLabels[actualType];
+        return (
+          <div key={appid}>
+            '{name}'は'{expectedTypeLabel}'でのダウンロードを試みましたが
             {
-              FALLBACK_FOUND: `'${actualType}'をダウンロードしました。`,
-              ALL_NOT_FOUND: 'ファイルが見つかりませんでした。',
-            }[failType]
-          }
-          <img src={allImageUrls.capsule} alt="" />
-          <img src={allImageUrls.header} alt="" />
-          <img src={allImageUrls.library} alt="" />
-          <hr />
-        </div>
-      ))}
+              {
+                FALLBACK_FOUND: `ファイルが見つからなかったため代わりに'${actualTypeLabel}'をダウンロードしました。`,
+                ALL_NOT_FOUND: 'ファイルが見つかりませんでした。',
+              }[failType]
+            }
+            必要に応じて下から別サイズの画像をダウンロードしてください。(壊れている画像もダウンロードできますが虚無がダウンロードされます。)
+            <br />
+            {renderAlternativeImage(filename, allImageUrls.capsule)}
+            {renderAlternativeImage(filename, allImageUrls.header)}
+            {renderAlternativeImage(filename, allImageUrls.library)}
+            <hr />
+          </div>
+        );
+      })}
     </div>
   );
 }
+
+const renderAlternativeImage = (filename: string, url: string) => {
+  return (
+    <a href={filename} download={filename}>
+      <img src={url} style={{ width: '220px' }} />
+    </a>
+  );
+};
 
 const StyledButton = styled.button``;
