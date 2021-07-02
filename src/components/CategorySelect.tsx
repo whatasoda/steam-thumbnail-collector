@@ -22,17 +22,22 @@ export default function CategorySelect({ value, allItemCount, categoryMap, onCha
   }, [allItemCount, categoryMap]);
 
   return (
-    <StyledSelect
-      value={value || ''}
-      onChange={(event) => {
-        onChange(event.currentTarget.value || null);
-      }}
-    >
-      {items.map(({ value, label }) => (
-        <option key={value} value={value} label={label} />
-      ))}
-    </StyledSelect>
+    <StyledLabel>
+      カテゴリー:{' '}
+      <select
+        value={value || ''}
+        onChange={(event) => {
+          onChange(event.currentTarget.value || null);
+        }}
+      >
+        {items.map(({ value, label }) => (
+          <option key={value} value={value} label={label} />
+        ))}
+      </select>
+    </StyledLabel>
   );
 }
 
-const StyledSelect = styled.select``;
+const StyledLabel = styled.label`
+  display: block;
+`;

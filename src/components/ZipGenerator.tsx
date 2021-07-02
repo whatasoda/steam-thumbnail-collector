@@ -33,6 +33,7 @@ export default function ZipGenerator({ games, zipFilename }: ZipGeneratorProps) 
             .then(() => setLoading(false))
             .catch(() => setLoading(false));
         }}
+        children="Generate"
       />
     </div>
   );

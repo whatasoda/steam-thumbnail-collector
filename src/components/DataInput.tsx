@@ -36,6 +36,7 @@ export default function createDataInput<T extends {}>(adapter: {
 }
 
 const StyledTextarea = styled.textarea`
-  width: 400px;
-  height: 300px;
+  display: block;
+  width: 500px;
+  height: 200px;
 `;

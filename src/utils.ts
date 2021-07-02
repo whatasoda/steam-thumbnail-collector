@@ -1,4 +1,4 @@
-import filenamify from 'filenamify/filenamify';
+import filenamify from 'filenamify';
 import JSZip from 'jszip';
 import fetchImage, { getAllImageUrls, AppImage, getPrimaryImageType, ImageFetchMode, ImageType } from './fetch-image';
 import { ConfigApps, RgGame } from './types';
@@ -67,7 +67,9 @@ export const createThumbnailZip = async (games: RgGame[], fetchMode: ImageFetchM
     zip.file(formatFilename(`${name}.jpg`), image.blob, { binary: true });
   });
 
-  return await zip.generateAsync({ type: 'blob' });
+  const zipBlob = await zip.generateAsync({ type: 'blob' });
+
+  return zipBlob;
 };
 
 export const saveAs = (file: Blob, filename: string) => {

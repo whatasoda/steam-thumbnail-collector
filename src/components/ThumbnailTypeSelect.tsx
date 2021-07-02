@@ -18,18 +18,23 @@ interface ThumbnailTypeSelectProps {
 
 export default function ThumbnailTypeSelect({ disabled, value, onChange }: ThumbnailTypeSelectProps) {
   return (
-    <StyledSelect
-      disabled={disabled}
-      value={value}
-      onChange={(event) => {
-        onChange(event.currentTarget.value as ImageFetchMode);
-      }}
-    >
-      {items.map(({ value, label }) => (
-        <option key={value} value={value} label={label} />
-      ))}
-    </StyledSelect>
+    <StyledLabel>
+      画像サイズ:{' '}
+      <select
+        disabled={disabled}
+        value={value}
+        onChange={(event) => {
+          onChange(event.currentTarget.value as ImageFetchMode);
+        }}
+      >
+        {items.map(({ value, label }) => (
+          <option key={value} value={value} label={label} />
+        ))}
+      </select>
+    </StyledLabel>
   );
 }
 
-const StyledSelect = styled.select``;
+const StyledLabel = styled.label`
+  display: block;
+`;
