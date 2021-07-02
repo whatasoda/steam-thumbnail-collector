@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { fetchModeLabels, ImageFetchMode } from '../fetch-image';
+import useLocalStorage from '../hooks/useLocalStorage';
 import { RgGame } from '../types';
 import { createThumbnailZip, FailedAppData, ProgressInfo, saveAs } from '../utils';
 import ThumbnailTypeSelect from './ThumbNailTypeSelect';
@@ -11,7 +12,7 @@ interface ZipGeneratorProps {
 }
 
 export default function ZipGenerator({ games, zipFilename }: ZipGeneratorProps) {
-  const [mode, setMode] = useState<ImageFetchMode>('library');
+  const [mode, setMode] = useLocalStorage<ImageFetchMode>('fetch-mode', 'library');
   const [fails, setFails] = useState<FailedAppData[]>([]);
   const [progress, setProgress] = useState<ProgressInfo>({ image: 0, zip: 0 });
   const [isLoading, setLoading] = useState(false);
