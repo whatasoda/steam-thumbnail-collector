@@ -7,6 +7,8 @@ import useLocalStorage from '../hooks/useLocalStorage';
 import ZipGenerator from './ZipGenerator';
 import CategorySelect from './CategorySelect';
 import styled from 'styled-components';
+import { ImageFetchMode } from '../fetch-image';
+import ThumbnailTypeSelect from './ThumbNailTypeSelect';
 
 const ConfigAppsInput = createDataInput<ConfigApps>({
   parse: (raw) => {
@@ -56,6 +58,7 @@ const RgGamesInput = createDataInput<RgGame[]>({
 export default function App() {
   const [apps, setApps] = useLocalStorage<ConfigApps>('apps', {});
   const [games, setGames] = useLocalStorage<RgGame[]>('rg-games', []);
+  const [fetchMode, setFetchMode] = useLocalStorage<ImageFetchMode>('fetch-mode', 'library');
   const [category, setCategory] = useState<string | null>(null);
 
   const categoryMap = useMemo(() => {
@@ -92,7 +95,13 @@ export default function App() {
           setCategory(category);
         }}
       />
-      <ZipGenerator zipFilename={`${category || 'AllGames'}.zip`} games={selectedGames} />
+      <ThumbnailTypeSelect
+        value={fetchMode}
+        onChange={(next) => {
+          setFetchMode(next);
+        }}
+      />
+      <ZipGenerator fetchMode={fetchMode} zipFilename={`${category || 'AllGames'}.zip`} games={selectedGames} />
     </Wrapper>
   );
 }
@@ -110,7 +119,7 @@ const Section1 = () => (
         にある<code>sharedconfig.vdf</code>
         をメモ帳等で開く。
       </li>
-      <li>その中身をすべてコピーしこのテキストボックスに貼り付ける。</li>
+      <li>その中身をすべてコピーしこのテキストボックスに貼り付ける。(すでにあるものを上書きしてください。)</li>
     </Steps>
   </>
 );
@@ -135,7 +144,9 @@ const Section2 = () => (
         </a>
         にあるスクリプトをコピーして先程開いたコンソールに貼り付ける。
       </li>
-      <li>自動的にゲームのデータがクリップボードにコピーされるので、それをこのテキストボックスに貼り付ける。</li>
+      <li>
+        自動的にゲームのデータがクリップボードにコピーされるので、それをこのテキストボックスに貼り付ける。(すでにあるものを上書きしてください。)
+      </li>
     </Steps>
   </>
 );

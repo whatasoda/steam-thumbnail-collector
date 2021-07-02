@@ -1,18 +1,16 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { fetchModeLabels, ImageFetchMode } from '../fetch-image';
-import useLocalStorage from '../hooks/useLocalStorage';
 import { RgGame } from '../types';
 import { createThumbnailZip, FailedAppData, ProgressInfo, saveAs } from '../utils';
-import ThumbnailTypeSelect from './ThumbNailTypeSelect';
 
 interface ZipGeneratorProps {
+  fetchMode: ImageFetchMode;
   zipFilename: string;
   games: RgGame[];
 }
 
-export default function ZipGenerator({ games, zipFilename }: ZipGeneratorProps) {
-  const [mode, setMode] = useLocalStorage<ImageFetchMode>('fetch-mode', 'library');
+export default function ZipGenerator({ fetchMode, games, zipFilename }: ZipGeneratorProps) {
   const [fails, setFails] = useState<FailedAppData[]>([]);
   const [progress, setProgress] = useState<ProgressInfo>({ image: 0, zip: 0 });
   const [isLoading, setLoading] = useState(false);
@@ -22,18 +20,11 @@ export default function ZipGenerator({ games, zipFilename }: ZipGeneratorProps) 
 
   return (
     <div>
-      <ThumbnailTypeSelect
-        disabled={generateDisabled}
-        value={mode}
-        onChange={(next) => {
-          return setMode(next);
-        }}
-      />
       <StyledButton
         disabled={generateDisabled}
         onClick={() => {
           setLoading(true);
-          createThumbnailZip(games, mode, setProgress)
+          createThumbnailZip(games, fetchMode, setProgress)
             .then(({ zipBlob, fails }) => {
               setZip(zipBlob);
               setFails(fails);
