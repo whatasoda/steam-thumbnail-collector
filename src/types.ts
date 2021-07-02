@@ -1,8 +1,6 @@
 export interface RgGame {
   appid: number;
   name: string;
-  name_escaped: string;
-  // logo: string;
 }
 
 export interface UserRoamingConfigStore {
@@ -10,17 +8,17 @@ export interface UserRoamingConfigStore {
     Software: {
       Valve: {
         Steam: {
-          Apps: ConfigApps;
+          Apps: {
+            [appId: number]: {
+              tags?: {
+                [tagIndex: number]: string;
+              };
+            };
+          };
         };
       };
     };
   };
 }
 
-export interface ConfigApps {
-  [appId: number]: {
-    tags?: {
-      [tagIndex: number]: string;
-    };
-  };
-}
+export type ConfigApps = UserRoamingConfigStore['UserRoamingConfigStore']['Software']['Valve']['Steam']['Apps'];

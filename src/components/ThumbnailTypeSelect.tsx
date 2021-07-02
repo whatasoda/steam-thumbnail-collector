@@ -11,13 +11,15 @@ const items: { value: ImageFetchMode; label: string }[] = [
 ];
 
 interface ThumbnailTypeSelectProps {
+  disabled?: boolean;
   value: ImageFetchMode;
   onChange: (mode: ImageFetchMode) => void;
 }
 
-export default function ThumbnailTypeSelect({ value, onChange }: ThumbnailTypeSelectProps) {
+export default function ThumbnailTypeSelect({ disabled, value, onChange }: ThumbnailTypeSelectProps) {
   return (
     <StyledSelect
+      disabled={disabled}
       value={value}
       onChange={(event) => {
         onChange(event.currentTarget.value as ImageFetchMode);

@@ -26,9 +26,9 @@ export const getJsonFromTextarea = <T, U = T>(selector: string, transform: (raw:
   }
 };
 
-export const createCategoryMap = (config: ConfigApps) => {
+export const createCategoryMap = (apps: ConfigApps) => {
   const categoryMap = new Map<string, string[]>();
-  (Object.entries(config) as [string, ConfigApps[keyof ConfigApps]][]).forEach(([appid, { tags }]) => {
+  (Object.entries(apps) as [string, ConfigApps[keyof ConfigApps]][]).forEach(([appid, { tags }]) => {
     Object.values(tags || {}).forEach((tag) => {
       const categoryItems = categoryMap.get(tag) || [];
       categoryItems.push(appid);
@@ -99,10 +99,13 @@ export const saveAs = (file: Blob, filename: string) => {
   anchor.download = filename;
   document.body.appendChild(anchor);
   anchor.click();
-  setTimeout(function () {
-    document.body.removeChild(anchor);
-    window.URL.revokeObjectURL(url);
-  }, 0);
+  return new Promise<void>((resolve) => {
+    setTimeout(function () {
+      document.body.removeChild(anchor);
+      window.URL.revokeObjectURL(url);
+      resolve();
+    }, 0);
+  });
 };
 
 const formatName = (name: string) => {
