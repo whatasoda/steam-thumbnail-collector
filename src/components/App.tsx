@@ -72,42 +72,59 @@ export default function App() {
   return (
     <Wrapper>
       <h1>Steam Thumbnail Collector</h1>
-      <Section1 />
-      <ConfigAppsInput
-        defaultValue={apps}
-        onData={(data) => {
-          setApps(data);
-        }}
-      />
-      <Section2 />
-      <RgGamesInput
-        defaultValue={games}
-        onData={(data) => {
-          setGames(data);
-        }}
-      />
-      <Section3 />
-      <CategorySelect
-        value={category}
-        categoryMap={categoryMap}
-        allItemCount={games.length}
-        onChange={(category) => {
-          setCategory(category);
-        }}
-      />
-      <ThumbnailTypeSelect
-        value={fetchMode}
-        onChange={(next) => {
-          setFetchMode(next);
-        }}
-      />
-      <ZipGenerator fetchMode={fetchMode} zipFilename={`${category || 'AllGames'}.zip`} games={selectedGames} />
+      <Section0 />
+      <Section1>
+        <ConfigAppsInput
+          defaultValue={apps}
+          onData={(data) => {
+            setApps(data);
+          }}
+        />
+      </Section1>
+      <Section2>
+        <RgGamesInput
+          defaultValue={games}
+          onData={(data) => {
+            setGames(data);
+          }}
+        />
+      </Section2>
+      <Section3>
+        <CategorySelect
+          value={category}
+          categoryMap={categoryMap}
+          allItemCount={games.length}
+          onChange={(category) => {
+            setCategory(category);
+          }}
+        />
+        <ThumbnailTypeSelect
+          value={fetchMode}
+          onChange={(next) => {
+            setFetchMode(next);
+          }}
+        />
+        <ZipGenerator fetchMode={fetchMode} zipFilename={`${category || 'AllGames'}.zip`} games={selectedGames} />
+      </Section3>
     </Wrapper>
   );
 }
 
-const Section1 = () => (
+const Section0 = () => (
   <>
+    <h2>0. Steamのデスクトップアプリ上で画像を集めたいゲームをカテゴリにまとめる</h2>
+    Steamのデスクトップアプリを開いて、ライブラリタブでいい感じにカテゴリを作る。その際正しくデータを反映させるために、以下の点について注意して作成してください。
+    <Steps>
+      <li>
+        新しくカテゴリを作るときに一番最初に割り当てたゲームについて、「他のゲームを1つ割り当てる」→「一度割り当てを解除」→「改めて割り当てる」という手順を取る。
+      </li>
+      <li>カテゴリの名前を途中で変更しない。</li>
+    </Steps>
+  </>
+);
+
+const Section1: React.FC = ({ children }) => (
+  <div>
     <h2>
       1. <code>sharedconfig.vdf</code> を読み込む
     </h2>
@@ -119,16 +136,19 @@ const Section1 = () => (
         にある<code>sharedconfig.vdf</code>
         をメモ帳等で開く。
       </li>
-      <li>その中身をすべてコピーしこのテキストボックスに貼り付ける。(すでにあるものを上書きしてください。)</li>
+      <li>
+        その中身をすべてコピーしこのテキストボックスに貼り付ける。(すでにあるものを上書きしてください。データはこのページを閉じても保存されますが、最新のデータを使いたいときは改めて同じ手順でデータを貼り付けてください。)
+      </li>
     </Steps>
-  </>
+    {children}
+  </div>
 );
 
-const Section2 = () => (
-  <>
+const Section2: React.FC = ({ children }) => (
+  <div>
     <h2>2. 自分のプロフィールページからゲームのデータを読み込む</h2>
     <Steps>
-      <li>SteamをWebブラウザで開き、ログインする。(Chrome推奨)</li>
+      <li>WebブラウザでSteamを開きログインする。(Chrome推奨)</li>
       <li>
         次に自分のプロフィールページに飛び、右側のメニューの中からゲーム一覧を開く。
         (自分のプロフィールページのURLの末尾に<code>/games/?tab=all</code>を追加することでも開けます。)
@@ -145,16 +165,18 @@ const Section2 = () => (
         にあるスクリプトをコピーして先程開いたコンソールに貼り付ける。
       </li>
       <li>
-        自動的にゲームのデータがクリップボードにコピーされるので、それをこのテキストボックスに貼り付ける。(すでにあるものを上書きしてください。)
+        自動的にゲームのデータがクリップボードにコピーされるので、それをこのテキストボックスに貼り付ける。(すでにあるものを上書きしてください。データはこのページを閉じても保存されますが、最新のデータを使いたいときは改めて同じ手順でデータを貼り付けてください。)
       </li>
     </Steps>
-  </>
+    {children}
+  </div>
 );
 
-const Section3 = () => (
-  <>
-    <h2>3. カテゴリーと画像サイズを選んで生成！</h2>
-  </>
+const Section3: React.FC = ({ children }) => (
+  <div>
+    <h2>3. カテゴリーと画像サイズを選んで生成&ダウンロード！</h2>
+    {children}
+  </div>
 );
 
 const Wrapper = styled.div`
