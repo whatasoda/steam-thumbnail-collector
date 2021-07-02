@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { fetchModeLabels, ImageFetchMode } from '../fetch-image';
 import { RgGame } from '../types';
-import { createThumbnailZip, FailedAppData, saveAs } from '../utils';
+import { createThumbnailZip, FailedAppData, ProgressInfo, saveAs } from '../utils';
 import ThumbnailTypeSelect from './ThumbNailTypeSelect';
 
 interface ZipGeneratorProps {
@@ -13,6 +13,7 @@ interface ZipGeneratorProps {
 export default function ZipGenerator({ games, zipFilename }: ZipGeneratorProps) {
   const [mode, setMode] = useState<ImageFetchMode>('library');
   const [fails, setFails] = useState<FailedAppData[]>([]);
+  const [progress, setProgress] = useState<ProgressInfo>({ image: 0, zip: 0 });
   const [isLoading, setLoading] = useState(false);
   const [zip, setZip] = useState<Blob | null>(null);
   const generateDisabled = games.length === 0 || isLoading;
@@ -31,7 +32,7 @@ export default function ZipGenerator({ games, zipFilename }: ZipGeneratorProps) 
         disabled={generateDisabled}
         onClick={() => {
           setLoading(true);
-          createThumbnailZip(games, mode)
+          createThumbnailZip(games, mode, setProgress)
             .then(({ zipBlob, fails }) => {
               setZip(zipBlob);
               setFails(fails);
@@ -51,6 +52,10 @@ export default function ZipGenerator({ games, zipFilename }: ZipGeneratorProps) 
         }}
         children="Download"
       />
+      <br />
+      画像読み込み{progress.image}%完了
+      <br />
+      ZIPファイル生成{progress.zip}%完了
       <hr />
       {fails.map(({ appid, name, filename, actualType, expectedType, failType, allImageUrls }) => {
         const expectedTypeLabel = fetchModeLabels[expectedType];

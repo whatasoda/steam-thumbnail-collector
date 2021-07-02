@@ -44,7 +44,23 @@ export interface FailedAppData {
   allImageUrls: Record<ImageType, string>;
 }
 
-export const createThumbnailZip = async (games: RgGame[], fetchMode: ImageFetchMode = 'capsule') => {
+export interface ProgressInfo {
+  image: number;
+  zip: number;
+}
+
+export const createThumbnailZip = async (
+  games: RgGame[],
+  fetchMode: ImageFetchMode = 'capsule',
+  onProgress?: (info: ProgressInfo) => void,
+) => {
+  const totalImageCount = games.length;
+  let finishedImageCount = 0;
+  const progress: ProgressInfo = {
+    image: 0,
+    zip: 0,
+  };
+
   const images: ImageFileData[] = [];
   const fails: FailedAppData[] = [];
   const promises = games.map(async ({ appid, name }) => {
@@ -64,6 +80,8 @@ export const createThumbnailZip = async (games: RgGame[], fetchMode: ImageFetchM
       const allImageUrls = getAllImageUrls(appid);
       fails.push({ failType, appid, name, filename, actualType, expectedType, allImageUrls });
     }
+    progress.image = (++finishedImageCount / totalImageCount) * 100;
+    onProgress?.({ ...progress });
   });
   await Promise.all(promises);
 
@@ -72,7 +90,10 @@ export const createThumbnailZip = async (games: RgGame[], fetchMode: ImageFetchM
     zip.file(filename, image.blob, { binary: true });
   });
 
-  const zipBlob = await zip.generateAsync({ type: 'blob' });
+  const zipBlob = await zip.generateAsync({ type: 'blob' }, ({ percent }) => {
+    progress.zip = percent;
+    onProgress?.({ ...progress });
+  });
   fails.sort(({ failType: a }, { failType: b }) => {
     if (a === b) return 0;
     if (a === 'ALL_NOT_FOUND') return -1;
