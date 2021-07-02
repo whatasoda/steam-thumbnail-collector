@@ -1,15 +1,15 @@
 import React, { useMemo, useState } from 'react';
 import vdf from 'vdf-parser';
-import { ConfigApps, RgGame, UserRoamingConfigStore } from '../types';
-import { createCategoryMap, filterGamesByCategory } from '../utils';
-import createDataInput from './DataInput';
-import useLocalStorage from '../hooks/useLocalStorage';
-import ZipGenerator from './ZipGenerator';
-import CategorySelect from './CategorySelect';
+import { ConfigApps, RgGame, UserRoamingConfigStore } from './types';
+import { createCategoryMap, filterGamesByCategory } from './utils';
+import createDataInput from './components/DataInput';
+import useLocalStorage from './hooks/useLocalStorage';
+import ZipGenerator from './components/ZipGenerator';
+import CategorySelect from './components/CategorySelect';
 import styled from 'styled-components';
-import { ImageFetchMode } from '../fetch-image';
-import ThumbnailTypeSelect from './ThumbNailTypeSelect';
-import { StyledCode, StyledOl } from './fragments';
+import { ImageFetchMode } from './fetch-image';
+import ThumbnailTypeSelect from './components/ThumbNailTypeSelect';
+import { StyledCode, StyledOl } from './components/fragments';
 
 const ConfigAppsInput = createDataInput<ConfigApps>({
   parse: (raw) => {
