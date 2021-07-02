@@ -26,7 +26,8 @@ export const getJsonFromTextarea = <T, U = T>(selector: string, transform: (raw:
   }
 };
 
-export const createCategoryMap = (apps: ConfigApps) => {
+export type CategoryMap = Map<string, string[]>;
+export const createCategoryMap = (apps: ConfigApps): CategoryMap => {
   const categoryMap = new Map<string, string[]>();
   (Object.entries(apps) as [string, ConfigApps[keyof ConfigApps]][]).forEach(([appid, { tags }]) => {
     Object.values(tags || {}).forEach((tag) => {
@@ -38,7 +39,7 @@ export const createCategoryMap = (apps: ConfigApps) => {
   return categoryMap;
 };
 
-export const filterGamesByCategory = (categoryMap: Map<string, string[]>, targetCategory: string, games: RgGame[]) => {
+export const filterGamesByCategory = (categoryMap: CategoryMap, targetCategory: string, games: RgGame[]) => {
   const targets = categoryMap.get(targetCategory) || [];
   if (!targets.length) {
     return [] as RgGame[];
