@@ -2,7 +2,7 @@
   (function collectGameData() {
     /** @type {import('./src/types').RgGame[]} */
     const source = rgGames;
-    const games = source.map(({ appid, name, name_escaped }) => ({ appid, name, name_escaped }));
+    const games = source.map(({ appid, name }) => ({ appid, name }));
     const textarea = document.createElement('textarea');
     textarea.value = JSON.stringify(games);
     textarea.style.width = '100%';
