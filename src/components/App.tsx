@@ -163,7 +163,7 @@ const Section2: React.FC = ({ children }) => (
         <a href="https://raw.githubusercontent.com/whatasoda/steam-thumbnail-collector/main/collect-game-data.js">
           このページ
         </a>
-        にあるスクリプトをコピーして先程開いたコンソールに貼り付ける。
+        にあるスクリプトをコピーして先程開いたコンソールに貼り付てEnter。
       </li>
       <li>
         自動的にゲームのデータがクリップボードにコピーされるので、それをこのテキストボックスに貼り付ける。(すでにあるものを上書きしてください。データはこのページを閉じても保存されますが、最新のデータを使いたいときは改めて同じ手順でデータを貼り付けてください。)
